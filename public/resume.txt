@@ -1,0 +1,26 @@
+RAVI MOHAN ROHELA
+Software Engineer / Full-Stack Developer
+
+CONTACT
+Email: ravimohanrohela@gmail.com
+GitHub: https://github.com/rawkc
+LinkedIn: https://linkedin.com/in/ravi-mohan-rohela
+
+PROFILE
+Software engineer focused on backend systems, APIs, full-stack engineering, and useful product development.
+
+EDUCATION
+B.Tech in Information Technology
+Ajay Kumar Garg Engineering College | 2021 - 2025
+
+SELECTED PROJECTS
+Quantara — Online examination and proctoring platform
+PassOP — Password manager
+Travio — Travel planning application
+Tune Tide — Music application
+Cinemiq — AI-powered video editing application (in development)
+
+TECHNOLOGIES
+React, Next.js, JavaScript, TypeScript, Tailwind CSS, Node.js, Express.js,
+PHP, REST APIs, MongoDB, MySQL, Git, GitHub, Postman, VS Code, Vercel,
+C++, Python, SQL
