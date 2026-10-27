@@ -2,11 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { usePortfolio } from '@/components/PortfolioContext';
 
 const ParticleUniverse = dynamic(() => import('@/components/ParticleUniverse'), { ssr: false });
 
 export default function HeroSection() {
     const heroRef = useRef<HTMLElement>(null);
+    const { data } = usePortfolio();
+    const hero = data.hero;
 
     useEffect(() => {
         // Animate hero elements in on load
@@ -44,30 +47,29 @@ export default function HeroSection() {
 
             <div className="hero-content">
                 <p className="hero-label" data-hero-animate>
-                    Software Engineer / Full-Stack Developer
+                    {hero.label}
                 </p>
 
                 <h1 className="hero-headline" data-hero-animate>
-                    I BUILD
+                    {hero.headlineLine1}
                     <br />
-                    DIGITAL
+                    {hero.headlineLine2}
                     <br />
-                    <span className="hero-headline-accent">EXPERIENCES</span>
+                    <span className="hero-headline-accent">{hero.headlineAccent}</span>
                     <br />
-                    THAT WORK.
+                    {hero.headlineLine4}
                 </h1>
 
                 <p className="hero-description" data-hero-animate>
-                    I&rsquo;m Ravi Mohan Rohela, a software engineer focused on building
-                    useful products, reliable backend systems, and thoughtful web experiences.
+                    {hero.description}
                 </p>
 
                 <div className="hero-ctas" data-hero-animate>
                     <button className="cta-primary" onClick={scrollToProjects}>
-                        Explore My Work ↗
+                        {hero.ctaPrimaryText}
                     </button>
                     <button className="cta-secondary" onClick={scrollToContact}>
-                        Let&rsquo;s Connect ↗
+                        {hero.ctaSecondaryText}
                     </button>
                 </div>
             </div>

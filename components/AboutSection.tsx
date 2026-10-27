@@ -1,9 +1,46 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePortfolio } from '@/components/PortfolioContext';
+
+function AnimatedCounter({ target, duration = 1600 }: { target: number; duration?: number }) {
+    const [count, setCount] = useState(0);
+    const ref = useRef<HTMLSpanElement>(null);
+    const animated = useRef(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !animated.current) {
+                    animated.current = true;
+                    const start = performance.now();
+                    const step = (now: number) => {
+                        const elapsed = now - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const eased = 1 - (1 - progress) * (1 - progress);
+                        setCount(Math.round(eased * target));
+                        if (progress < 1) requestAnimationFrame(step);
+                    };
+                    requestAnimationFrame(step);
+                }
+            },
+            { threshold: 0.3 }
+        );
+
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [target, duration]);
+
+    return <span ref={ref}>{count}</span>;
+}
 
 export default function AboutSection() {
     const ref = useRef<HTMLElement>(null);
+    const { data } = usePortfolio();
+    const about = data.about;
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -33,51 +70,66 @@ export default function AboutSection() {
                     <div className="about-left">
                         <p className="section-label" data-reveal>About</p>
                         <h2 className="about-headline" data-reveal>
-                            Engineer.
+                            {about.headlineLine1}
                             <br />
-                            Builder.
+                            {about.headlineLine2}
                             <br />
-                            <span className="accent-text">Problem solver.</span>
+                            <span className="accent-text">{about.headlineAccent}</span>
                         </h2>
                     </div>
 
                     {/* Right: content */}
                     <div className="about-right">
-                        <p className="about-bio" data-reveal>
-                            I&rsquo;m <strong>Ravi Mohan Rohela</strong>, a software engineer who enjoys turning complex
-                            requirements into clean, working software. My focus is on backend systems and full-stack
-                            product development — writing APIs that perform well, interfaces that feel intuitive,
-                            and architectures that can actually grow.
-                        </p>
+                        {about.bioParagraphs.map((para, i) => (
+                            <p key={i} className="about-bio" data-reveal>
+                                {para}
+                            </p>
+                        ))}
 
-                        <p className="about-bio" data-reveal>
-                            I graduated with a B.Tech in Information Technology from{' '}
-                            <em>Ajay Kumar Garg Engineering College</em> (2021–2025), where I built most of the
-                            projects in this portfolio while exploring everything from distributed systems
-                            to generative AI tooling.
-                        </p>
-
-                        <p className="about-bio" data-reveal>
-                            I care about code that works the first time it matters — reliable, legible, and built
-                            to last rather than built to impress on a conference slide.
-                        </p>
+                        {/* Animated Stat Counters */}
+                        <div className="about-stats" data-reveal>
+                            <div className="stat-item">
+                                <span className="stat-number">
+                                    <AnimatedCounter target={about.stats.projectsCount} />
+                                </span>
+                                <span className="stat-label">Projects Built</span>
+                            </div>
+                            <div className="stat-item">
+                                <span className="stat-number">
+                                    <AnimatedCounter target={about.stats.yearsCoding} />+
+                                </span>
+                                <span className="stat-label">Years Coding</span>
+                            </div>
+                            <div className="stat-item">
+                                <span className="stat-number">
+                                    <AnimatedCounter target={about.stats.deploymentsLive} />
+                                </span>
+                                <span className="stat-label">Deployments Live</span>
+                            </div>
+                            <div className="stat-item">
+                                <span className="stat-number">
+                                    <AnimatedCounter target={about.stats.technologiesCount} />+
+                                </span>
+                                <span className="stat-label">Technologies Used</span>
+                            </div>
+                        </div>
 
                         <div className="about-details" data-reveal>
                             <div className="about-detail-item">
                                 <span className="about-detail-label">Location</span>
-                                <span className="about-detail-value">India</span>
+                                <span className="about-detail-value">{about.details.location}</span>
                             </div>
                             <div className="about-detail-item">
                                 <span className="about-detail-label">Focus</span>
-                                <span className="about-detail-value">Backend &amp; Full-Stack</span>
+                                <span className="about-detail-value">{about.details.focus}</span>
                             </div>
                             <div className="about-detail-item">
                                 <span className="about-detail-label">Education</span>
-                                <span className="about-detail-value">B.Tech IT — 2025</span>
+                                <span className="about-detail-value">{about.details.education}</span>
                             </div>
                             <div className="about-detail-item">
                                 <span className="about-detail-label">Status</span>
-                                <span className="about-detail-value about-status">Available for opportunities</span>
+                                <span className="about-detail-value about-status">{about.details.status}</span>
                             </div>
                         </div>
                     </div>

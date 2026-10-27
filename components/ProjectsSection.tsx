@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import ProjectCard from '@/components/ProjectCard';
-import projects from '@/lib/projects';
+import { usePortfolio } from '@/components/PortfolioContext';
 
 export default function ProjectsSection() {
     const ref = useRef<HTMLElement>(null);
+    const { data } = usePortfolio();
+    const projects = data.projects;
 
     useEffect(() => {
         const obs = new IntersectionObserver(
@@ -23,14 +25,14 @@ export default function ProjectsSection() {
         );
         if (ref.current) obs.observe(ref.current);
         return () => obs.disconnect();
-    }, []);
+    }, [projects]);
 
     return (
         <section className="section projects-section" id="projects" ref={ref}>
             <div className="section-inner">
                 <div className="section-header" data-reveal>
                     <p className="section-label">
-                        <span className="section-number">05</span>
+                        <span className="section-number">{String(projects.length).padStart(2, '0')}</span>
                         Selected Projects
                     </p>
                     <h2 className="section-title">
@@ -42,7 +44,7 @@ export default function ProjectsSection() {
 
                 <div className="projects-grid">
                     {projects.map((project, i) => (
-                        <ProjectCard key={project.id} project={project} index={i} />
+                        <ProjectCard key={project.id || i} project={project} index={i} />
                     ))}
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { PortfolioProvider } from '@/components/PortfolioContext';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://rawkc.dev'),
@@ -53,7 +54,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>{children}</body>
+      <body>
+        <PortfolioProvider>{children}</PortfolioProvider>
+      </body>
     </html>
   );
 }

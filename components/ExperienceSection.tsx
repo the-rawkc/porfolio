@@ -1,19 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-
-const experiences = [
-    {
-        type: 'education',
-        role: 'B.Tech in Information Technology',
-        org: 'Ajay Kumar Garg Engineering College',
-        period: '2021 – 2025',
-        desc: 'Studied core computer science fundamentals while building projects across backend, full-stack, and AI-assisted video tooling.',
-    },
-];
+import { usePortfolio } from '@/components/PortfolioContext';
 
 export default function ExperienceSection() {
     const ref = useRef<HTMLElement>(null);
+    const { data } = usePortfolio();
+    const experiences = data.experiences;
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -30,7 +23,7 @@ export default function ExperienceSection() {
         );
         if (ref.current) observer.observe(ref.current);
         return () => observer.disconnect();
-    }, []);
+    }, [experiences]);
 
     return (
         <section className="section experience-section" id="experience" ref={ref}>
@@ -46,14 +39,14 @@ export default function ExperienceSection() {
 
                 <div className="timeline">
                     {experiences.map((item, index) => (
-                        <div key={item.org} className="timeline-item" data-reveal>
+                        <div key={item.id || index} className="timeline-item" data-reveal>
                             <div className="timeline-marker">
                                 <div className="timeline-dot" />
                                 {index < experiences.length - 1 && <div className="timeline-line" />}
                             </div>
                             <div className="timeline-content">
                                 <div className="timeline-meta">
-                                    <span className="timeline-type">Education</span>
+                                    <span className="timeline-type">{item.type || 'Experience'}</span>
                                     <span className="timeline-period">{item.period}</span>
                                 </div>
                                 <h3 className="timeline-role">{item.role}</h3>

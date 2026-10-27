@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { usePortfolio } from '@/components/PortfolioContext';
 
 const navLinks = [
     { label: 'About', href: '#about' },
@@ -16,11 +17,13 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('');
+    const { data } = usePortfolio();
+    const resumeUrl = data.contact?.resumeUrl || '/resume.pdf';
+    const resumeFileName = data.contact?.resumeFileName || 'Ravi_Mohan_Rohela_Resume.pdf';
 
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 40);
-            // Active section detection
             const sections = ['about', 'projects', 'skills', 'experience', 'contact'];
             for (const id of sections.reverse()) {
                 const el = document.getElementById(id);
@@ -70,10 +73,10 @@ export default function Navbar() {
                     ))}
                     <li>
                         <a
-                            href="/resume.pdf"
+                            href={resumeUrl}
                             className="nav-resume-btn"
-                            download="Ravi_Mohan_Rohela_Resume.pdf"
-                            aria-label="Download Resume"
+                            download={resumeFileName}
+                            aria-label="Download Resume (PDF)"
                         >
                             Resume ↗
                         </a>
@@ -112,7 +115,7 @@ export default function Navbar() {
                         </li>
                     ))}
                     <li>
-                        <a href="/resume.pdf" className="mobile-nav-link" download="Ravi_Mohan_Rohela_Resume.pdf">
+                        <a href={resumeUrl} className="mobile-nav-link" download={resumeFileName}>
                             Resume ↗
                         </a>
                     </li>
