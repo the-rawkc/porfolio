@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import ProjectCard from '@/components/ProjectCard';
 import { usePortfolio } from '@/components/PortfolioContext';
 
@@ -8,6 +9,9 @@ export default function ProjectsSection() {
     const ref = useRef<HTMLElement>(null);
     const { data } = usePortfolio();
     const projects = data.projects;
+    const [showAll, setShowAll] = useState(false);
+
+    const visibleProjects = showAll ? projects : projects.slice(0, 6);
 
     useEffect(() => {
         const obs = new IntersectionObserver(
@@ -25,7 +29,16 @@ export default function ProjectsSection() {
         );
         if (ref.current) obs.observe(ref.current);
         return () => obs.disconnect();
-    }, [projects]);
+    }, [visibleProjects]);
+
+    const handleToggleShow = () => {
+        if (showAll) {
+            setShowAll(false);
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            setShowAll(true);
+        }
+    };
 
     return (
         <section className="section projects-section" id="projects" ref={ref}>
@@ -43,10 +56,24 @@ export default function ProjectsSection() {
                 </div>
 
                 <div className="projects-grid">
-                    {projects.map((project, i) => (
+                    {visibleProjects.map((project, i) => (
                         <ProjectCard key={project.id || i} project={project} index={i} />
                     ))}
                 </div>
+
+                {projects.length > 6 && (
+                    <div className="show-more-wrapper">
+                        <button
+                            type="button"
+                            className="show-more-btn"
+                            onClick={handleToggleShow}
+                            aria-expanded={showAll}
+                        >
+                            <span>{showAll ? 'Show Fewer Projects' : `Show More Projects (+${projects.length - 6})`}</span>
+                            {showAll ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

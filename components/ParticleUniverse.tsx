@@ -6,7 +6,6 @@ import { ParticleEngine } from '@/lib/particle-engine';
 export default function ParticleUniverse() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<ParticleEngine | null>(null);
-    const [interacted, setInteracted] = useState(false);
     const [textVisible, setTextVisible] = useState(true);
 
     useEffect(() => {
@@ -26,10 +25,7 @@ export default function ParticleUniverse() {
         engineRef.current = engine;
 
         const handleFirstInteraction = () => {
-            if (!interacted) {
-                setInteracted(true);
-                setTimeout(() => setTextVisible(false), 400);
-            }
+            setTextVisible(false);
         };
 
         window.addEventListener('mousemove', handleFirstInteraction, { once: true });
@@ -59,19 +55,6 @@ export default function ParticleUniverse() {
             >
                 <span className="touch-hint">Touch to explore.</span>
                 <span className="mouse-hint">Move your mouse.</span>
-            </div>
-
-            {/* Entering text */}
-            <div
-                className="particle-instruction"
-                style={{
-                    opacity: interacted && !textVisible ? 1 : 0,
-                    transition: 'opacity 1.2s ease',
-                    pointerEvents: 'none',
-                    transitionDelay: '0.2s',
-                }}
-            >
-                <span className="entering-text">You&rsquo;re entering RAWKC&rsquo;s world.</span>
             </div>
         </div>
     );
