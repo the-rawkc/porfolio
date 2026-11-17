@@ -77,7 +77,6 @@ export default function HeroSection() {
             {/* Scroll indicator */}
             <div className="scroll-indicator" data-hero-animate aria-hidden="true">
                 <span className="scroll-line" />
-                <span className="scroll-text">Scroll</span>
             </div>
         </section>
     );
