@@ -36,7 +36,7 @@ export default function Home() {
 
           <div className="footer-socials">
             <a
-              href="https://github.com/rawkc"
+              href="https://github.com/the-rawkc"
               target="_blank"
               rel="noopener noreferrer"
               className="footer-social-link"
