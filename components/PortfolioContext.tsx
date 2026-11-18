@@ -4,7 +4,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { initialPortfolioData } from '@/lib/default-content';
 import { hexToRgba, PortfolioData } from '@/lib/portfolio-data';
 
-const STORAGE_KEY = 'rawkc_portfolio_data';
+const STORAGE_KEY = 'rawkc_portfolio_data_v2';
+const LEGACY_STORAGE_KEY = 'rawkc_portfolio_data';
 
 interface PortfolioContextType {
   data: PortfolioData;
@@ -36,14 +37,25 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    // Clean up legacy unversioned storage key so old stuck caches are wiped
+    try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    } catch {}
+
     // 1. Check LocalStorage first for instant customized view
     try {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        setDataState(parsed);
-        if (parsed.theme?.accentColor) {
-          applyTheme(parsed.theme.accentColor);
+        // Only use cache if it has at least as many projects as the fresh default content
+        if (parsed?.projects && parsed.projects.length >= initialPortfolioData.projects.length) {
+          setDataState(parsed);
+          if (parsed.theme?.accentColor) {
+            applyTheme(parsed.theme.accentColor);
+          }
+        } else {
+          // Stale cache detected; purge it so fresh code content displays
+          localStorage.removeItem(STORAGE_KEY);
         }
       }
     } catch (e) {
@@ -55,8 +67,8 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
       .then(res => res.json())
       .then(res => {
         if (res.success && res.data) {
-          // If no local edits yet, set from server
-          if (!localStorage.getItem(STORAGE_KEY)) {
+          const cached = localStorage.getItem(STORAGE_KEY);
+          if (!cached) {
             setDataState(res.data);
             if (res.data.theme?.accentColor) {
               applyTheme(res.data.theme.accentColor);
@@ -114,6 +126,7 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
   const resetToDefault = () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
     } catch {}
     setDataState(initialPortfolioData);
     applyTheme(initialPortfolioData.theme.accentColor);
